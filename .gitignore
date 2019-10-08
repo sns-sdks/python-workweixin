@@ -97,3 +97,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# token
+message_token.pickle
