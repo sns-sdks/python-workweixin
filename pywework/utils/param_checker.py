@@ -1,7 +1,7 @@
 """
     参数校验
 """
-from pywework.error import WeWorkError
+from pywework.error import ErrorCode, WeWorkError
 
 
 def incompatible_validator(**kwargs):
@@ -19,6 +19,6 @@ def incompatible_validator(**kwargs):
             given += 1
     params = ','.join(kwargs.keys())
     if given == 0:
-        raise WeWorkError(2, f'Specify at least one of {params}')
+        raise WeWorkError(ErrorCode.MISSION_PARAM, f'Specify at least one of {params}')
     elif given > 1:
-        raise WeWorkError(3, f'Incompatible parameters specified for {params}')
+        raise WeWorkError(ErrorCode.INVALID_PARAM, f'Incompatible parameters specified for {params}')

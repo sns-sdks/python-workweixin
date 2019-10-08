@@ -5,11 +5,11 @@ import pathlib
 import pickle
 
 from .base import BaseApi
-from pywework.error import WeWorkError
+from pywework.error import ErrorCode, WeWorkError
 from pywework.utils.param_checker import incompatible_validator
 
 
-class MessageApi(BaseApi):
+class Api(BaseApi):
     SUPPORT_TYPES = [
         'text', 'image', 'voice', 'video', 'file', 'textcard',
         'news', 'mpnews', 'markdown', 'miniprogram_notice', 'taskcard'
@@ -57,8 +57,10 @@ class MessageApi(BaseApi):
         with token_path.open('ab') as f:
             pickle.dump(resp, f)
 
-    def send_text(self, to_user=None, to_party=None, to_tag=None, text=None, safe=0, enable_id_trans=0):
+    def send_text(self, text, to_user=None, to_party=None, to_tag=None, safe=0, enable_id_trans=0):
         incompatible_validator(to_user=to_user, to_party=to_party, to_tag=to_tag)
+        if text is None:
+            raise WeWorkError(ErrorCode.MISSION_PARAM, f'Need provide text info')
         text_info = {
             'content': text
         }
@@ -68,9 +70,47 @@ class MessageApi(BaseApi):
             safe=safe, enable_id_trans=enable_id_trans
         )
 
+    def send_textcard(self,
+                      to_user=None,
+                      to_party=None,
+                      to_tag=None,
+                      title=None,
+                      description=None,
+                      url=None,
+                      btn_text=None,
+                      enable_id_trans=0):
+
+        incompatible_validator(to_user=to_user, to_party=to_party, to_tag=to_tag)
+        text_card = {
+            'title': title,
+            'description': description,
+            'url': url,
+            'btntxt': btn_text
+        }
+        return self._send(
+            'textcard', text_card,
+            to_user=to_user, to_party=to_party, to_tag=to_tag,
+            enable_id_trans=enable_id_trans
+        )
+
+    def send_markdown(self,
+                      markdown,
+                      to_user=None,
+                      to_party=None,
+                      to_tag=None):
+        incompatible_validator(to_user=to_user, to_party=to_party, to_tag=to_tag)
+        markdown_info = {
+            'content': markdown
+        }
+
+        return self._send(
+            'markdown', markdown_info,
+            to_user=to_user, to_party=to_party, to_tag=to_tag
+        )
+
     def _send(self, msg_type, info, to_user=None, to_party=None, to_tag=None, **kwargs):
         if msg_type not in self.SUPPORT_TYPES:
-            raise WeWorkError(1, 'message type not support')
+            raise WeWorkError(ErrorCode.NOT_SUPPORT_TYPE, 'message type not support')
 
         data = {
             'touser': to_user,

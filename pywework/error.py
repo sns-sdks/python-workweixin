@@ -1,6 +1,13 @@
 """ error """
 
 
+class ErrorCode:
+    NOT_SUPPORT_METHOD = 11001
+    NOT_SUPPORT_TYPE = 11002
+    INVALID_PARAM = 11003
+    MISSION_PARAM = 11004
+
+
 class WeWorkError(Exception):
     def __init__(self, errcode, errmsg):
         self.errcode = errcode
