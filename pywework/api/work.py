@@ -1,6 +1,7 @@
 """
     消息推送
 """
+import logging
 import pathlib
 import pickle
 
@@ -8,6 +9,8 @@ from .base import BaseApi
 from pywework.error import ErrorCode, WeWorkError
 from pywework.utils.param_checker import incompatible_validator
 from pywework.utils.msg_crypt import Packet
+
+logger = logging.getLogger(__name__)
 
 
 class Api(BaseApi):

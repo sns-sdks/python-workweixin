@@ -67,7 +67,7 @@ class XMLParse:
         try:
             xml_tree = eT.fromstring(xml_text)
             encrypt = xml_tree.find("Encrypt")
-            return ErrorCode.WXBizMsgCrypt_OK, encrypt.texts
+            return ErrorCode.WXBizMsgCrypt_OK, encrypt.text
         except Exception as e:
             logging.error(e)
             return ErrorCode.WXBizMsgCrypt_ParseXml_Error, None
