@@ -8,11 +8,13 @@ import random
 import socket
 import struct
 import time
+from collections import defaultdict
 
 import xml.etree.cElementTree as eT
 from Crypto.Cipher import AES
 
 from pywework.error import ErrorCode, WeWorkError
+from pywework.utils import constant
 
 logger = logging.getLogger(__name__)
 
@@ -86,6 +88,51 @@ class XMLParse:
             timestamp=timestamp, nonce=nonce
         )
         return resp_xml
+
+
+class MessageXMLParse:
+    """
+    针对普通消息结构体的 解析 与 构建
+    """
+    SUPPORT_BUILD_TYPE = {
+        'text': constant.XML_TEXT_STRUCT,
+        'media': constant.XML_MEDIA_STRUCT,
+        'link': constant.XML_LINK_STRUCT,
+        'voice': constant.XML_VOICE_STRUCT,
+        'video': constant.XML_VIDEO_STRUCT,
+        'location': constant.XML_LOCATION_STRUCT
+    }
+
+    SUPPORT_PARSE_TYPE = {
+        'text': constant.XML_TEXT_KEY,
+        'media': constant.XML_MEDIA_KEY,
+        'link': constant.XML_LINK_KEY,
+        'voice': constant.XML_VOICE_KEY,
+        'video': constant.XML_VIDEO_KEY,
+        'location': constant.XML_LOCATION_KEY
+    }
+
+    def build_message(self, msg_type, **kwargs):
+        if msg_type not in self.SUPPORT_BUILD_TYPE:
+            raise WeWorkError(ErrorCode.NOT_SUPPORT_TYPE, f'Message type for {msg_type} not support to build.')
+        base_info = self.SUPPORT_BUILD_TYPE[msg_type]
+        keys = set()
+        for values in self.SUPPORT_BUILD_TYPE.values():
+            values = set(values)
+            keys.union(values)
+        kw = defaultdict(lambda: '', kwargs)
+        return base_info.format(**kw)
+
+    def parse_message(self, message):
+        xml_tree = eT.fromstring(message)
+        msg_type = xml_tree.find('MsgType').text
+        if msg_type not in self.SUPPORT_PARSE_TYPE:
+            raise WeWorkError(ErrorCode.NOT_SUPPORT_TYPE, f'Message type for {msg_type} not support to parse.')
+        res = {}
+        for key in self.SUPPORT_PARSE_TYPE[msg_type]:
+            res[key] = xml_tree.find(key).text
+
+        return res
 
 
 class PKCS7Encoder:
