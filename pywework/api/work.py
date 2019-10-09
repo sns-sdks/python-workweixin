@@ -7,6 +7,7 @@ import pickle
 from .base import BaseApi
 from pywework.error import ErrorCode, WeWorkError
 from pywework.utils.param_checker import incompatible_validator
+from pywework.utils.msg_crypt import Packet
 
 
 class Api(BaseApi):
@@ -16,12 +17,15 @@ class Api(BaseApi):
     ]
     DEFAULT_TOKEN_FILE = 'message_token.pickle'
 
-    def __init__(self, corp_id, corp_secret, agent_id, token_file=None):
+    def __init__(self, corp_id, corp_secret, agent_id, token_file=None, r_token=None, r_aes_key=None):
         super().__init__()
         self.corp_id = corp_id
         self.corp_secret = corp_secret
         self.agent_id = agent_id
         self.token_file = token_file
+        self.r_token = r_token
+        self.r_aes_key = r_aes_key
+        self.work_cpt = None
         self.initial()
 
     def initial(self):
@@ -34,6 +38,13 @@ class Api(BaseApi):
             self.access_token = token_info['access_token']
         else:
             self.get_access_token()
+
+        if self.r_token and self.r_aes_key:
+            self.work_cpt = Packet(
+                token=self.r_token,
+                aes_key=self.r_aes_key,
+                received=self.corp_id
+            )
 
     def get_access_token(self):
         if self.access_token is None:
