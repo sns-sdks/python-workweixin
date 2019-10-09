@@ -99,3 +99,6 @@ dmypy.json
 
 # token
 message_token.pickle
+
+# pycharm
+.idea/

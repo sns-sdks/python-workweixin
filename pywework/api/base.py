@@ -6,7 +6,7 @@ import logging
 
 import requests
 
-from pywework.error import WeWorkError
+from pywework.error import ErrorCode, WeWorkError
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class BaseApi:
         elif method == 'GET':
             resp = self._session.get(url=url, params=params)
         else:
-            raise WeWorkError(0, f"Not support method for {method}.")
+            raise WeWorkError(ErrorCode.NOT_SUPPORT_METHOD, f"Not support method for {method}.")
 
         resp_data = resp.json()
         if self._token_expired(resp_data.get('errcode')):
