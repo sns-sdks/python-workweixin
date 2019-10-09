@@ -8,7 +8,6 @@ import random
 import socket
 import struct
 import time
-from collections import defaultdict
 
 import xml.etree.cElementTree as eT
 from Crypto.Cipher import AES
@@ -90,6 +89,11 @@ class XMLParse:
         return resp_xml
 
 
+class DefaultDict(dict):
+    def __missing__(self, key):
+        return ''
+
+
 class MessageXMLParse:
     """
     针对普通消息结构体的 解析 与 构建
@@ -116,12 +120,7 @@ class MessageXMLParse:
         if msg_type not in self.SUPPORT_BUILD_TYPE:
             raise WeWorkError(ErrorCode.NOT_SUPPORT_TYPE, f'Message type for {msg_type} not support to build.')
         base_info = self.SUPPORT_BUILD_TYPE[msg_type]
-        keys = set()
-        for values in self.SUPPORT_BUILD_TYPE.values():
-            values = set(values)
-            keys.union(values)
-        kw = defaultdict(lambda: '', kwargs)
-        return base_info.format(**kw)
+        return base_info.format_map(DefaultDict(kwargs))
 
     def parse_message(self, message):
         xml_tree = eT.fromstring(message)
@@ -131,7 +130,6 @@ class MessageXMLParse:
         res = {}
         for key in self.SUPPORT_PARSE_TYPE[msg_type]:
             res[key] = xml_tree.find(key).text
-
         return res
 
 
