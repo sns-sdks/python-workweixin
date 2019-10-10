@@ -248,6 +248,7 @@ class Packet:
             raise WeWorkError(ErrorCode.WXBizMsgCrypt_IllegalAesKey, 'EncodingAESKey invalid !')
         self.token = token
         self.received = received
+        self.msg_xml_parser = MessageXMLParse()
 
     def verify_url(self, signature, timestamp, nonce, echo_str):
         """
