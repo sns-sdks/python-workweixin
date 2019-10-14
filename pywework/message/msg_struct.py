@@ -1,5 +1,17 @@
-# 普通消息体的 XML 格式
+# 普通消息体的不同格式
 # Refer: https://work.weixin.qq.com/api/doc#90000/90135/90239
+
+XML_RESPOND_KEY = [
+    'Encrypt', 'MsgSignature', 'TimeStamp', 'Nonce'
+]
+XML_RESPOND_STRUCT = (
+    "<xml>"
+    "<Encrypt><![CDATA[{Encrypt}]]></Encrypt>"
+    "<MsgSignature><![CDATA[{MsgSignature}]]></MsgSignature>"
+    "<TimeStamp>{TimeStamp}</TimeStamp>"
+    "<Nonce><![CDATA[{Nonce}]]></Nonce>"
+    "</xml>"
+)
 
 XML_BASE_KEY = [
     'ToUserName', 'FromUserName', 'CreateTime', 'MsgType', 'MsgId', 'AgentID'
