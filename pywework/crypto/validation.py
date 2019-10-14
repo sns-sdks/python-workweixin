@@ -96,7 +96,8 @@ class MessageValidation:
         :return:
         """
         try:
-            cipher_text = xml_message.parse_message(msg, respond=True)
+            msg_data = xml_message.parse_message(msg, respond=True)
+            cipher_text = msg_data['Encrypt']
         except Exception as e:
             logger.error(e)
             return ErrorCode.WXBizMsgCrypt_ParseXml_Error, None
