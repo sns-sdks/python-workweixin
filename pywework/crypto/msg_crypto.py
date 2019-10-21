@@ -82,15 +82,15 @@ class MsgCrypto:
         # 消息长度
         msg_len = socket.ntohl(struct.unpack("I", plain_text[:4])[0])
         # 消息内容
-        msg_content = plain_text[4: msg_len + 4]
+        msg_content = plain_text[4: (msg_len + 4)]
         # receive id
-        from_received = plain_text[msg_len + 4:]
+        from_received = plain_text[(msg_len + 4):]
 
         # 判断 receive id
         if from_received.decode("utf-8") != receive_id:
             return ErrorCode.WXBizMsgCrypt_ValidateCorpid_Error, None
 
-        return ErrorCode.WXBizMsgCrypt_OK, msg_content
+        return ErrorCode.WXBizMsgCrypt_OK, msg_content.decode("utf-8")
 
     @staticmethod
     def get_random_str() -> str:

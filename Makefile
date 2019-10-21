@@ -6,7 +6,7 @@ help:
 	@echo "  env         install all production dependencies"
 	@echo "  clean       remove unwanted stuff"
 	@echo "  docs        build documentation"
-	@echo "  lint        check style with flake8"
+	@echo "  lint        check style with black"
 	@echo "  test        run tests"
 
 env:
