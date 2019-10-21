@@ -7,6 +7,7 @@ class PKCS7Padding:
     """
     基于 PKCS7 的消息补位
     """
+
     BLOCK_SIZE = 32
 
     def encode(self, text: bytes) -> bytes:

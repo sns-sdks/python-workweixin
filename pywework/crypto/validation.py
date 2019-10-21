@@ -25,16 +25,20 @@ class MessageValidation:
         https://work.weixin.qq.com/api/doc#90000/90139/90968/%E9%99%84%E6%B3%A8
         """
         try:
-            self.key = base64.b64decode(aes_key + '=')
+            self.key = base64.b64decode(aes_key + "=")
             assert len(self.key) == 32
         except Exception as e:
             logger.error(e)
-            raise WeWorkError(ErrorCode.WXBizMsgCrypt_IllegalAesKey, 'EncodingAESKey invalid !')
+            raise WeWorkError(
+                ErrorCode.WXBizMsgCrypt_IllegalAesKey, "EncodingAESKey invalid !"
+            )
 
         self.token = token
         self.receive_id = receive_id
 
-    def verify_url(self, signature, timestamp, nonce, echo_str: str) -> Tuple[int, Optional[str]]:
+    def verify_url(
+        self, signature, timestamp, nonce, echo_str: str
+    ) -> Tuple[int, Optional[str]]:
         """
         验证URL有效性 的简化处理
         :param signature: 消息签名
@@ -55,7 +59,9 @@ class MessageValidation:
         st, echo_str = mc.decipher(echo_str, self.receive_id)
         return st, echo_str
 
-    def msg_build(self, reply: str, nonce: str, timestamp: str = None) -> Tuple[int, Optional[str]]:
+    def msg_build(
+        self, reply: str, nonce: str, timestamp: str = None
+    ) -> Tuple[int, Optional[str]]:
         """
         打包消息体
         :param reply: 回复消息
@@ -68,7 +74,7 @@ class MessageValidation:
         st, cipher_text = mc.encipher(reply, self.receive_id)
         if st != 0:
             return st, None
-        cipher_text = cipher_text.decode('utf-8')
+        cipher_text = cipher_text.decode("utf-8")
 
         if timestamp is None:
             timestamp = str(int(time.time()))
@@ -78,15 +84,17 @@ class MessageValidation:
             return st, None
 
         respond_msg = xml_message.build_message(
-            'respond',
+            "respond",
             Encrypt=cipher_text,
             MsgSignature=sign,
             TimeStamp=timestamp,
-            Nonce=nonce
+            Nonce=nonce,
         )
         return ErrorCode.WXBizMsgCrypt_OK, respond_msg
 
-    def msg_parse(self, msg: str, signature: str, timestamp: str, nonce: str) -> Tuple[int, Optional[str]]:
+    def msg_parse(
+        self, msg: str, signature: str, timestamp: str, nonce: str
+    ) -> Tuple[int, Optional[str]]:
         """
         原始消息解析
         :param msg: 消息 body
@@ -97,7 +105,7 @@ class MessageValidation:
         """
         try:
             msg_data = xml_message.parse_message(msg, respond=True)
-            cipher_text = msg_data['Encrypt']
+            cipher_text = msg_data["Encrypt"]
         except Exception as e:
             logger.error(e)
             return ErrorCode.WXBizMsgCrypt_ParseXml_Error, None

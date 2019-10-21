@@ -35,23 +35,25 @@ class MsgCrypto:
         https://work.weixin.qq.com/api/doc#90000/90139/90968/%E9%99%84%E6%B3%A8
         :return: 加密后的字符串
         """
-        plain_text = plain_text.encode()
+        plain_text_bytes: bytes = plain_text.encode()
         # 拼接明文
-        plain_text = b''.join([
-            self.get_random_str().encode(),  # 16字节 随机字符串
-            struct.pack("I", socket.htonl(len(plain_text))),  # 4字节 消息长度
-            plain_text,  # 消息内容
-            receive_id.encode()  # receive id
-        ])
+        plain_text_bytes = b"".join(
+            [
+                self.get_random_str().encode(),  # 16字节 随机字符串
+                struct.pack("I", socket.htonl(len(plain_text_bytes))),  # 4字节 消息长度
+                plain_text_bytes,  # 消息内容
+                receive_id.encode(),  # receive id
+            ]
+        )
 
         # 消息补位
         pkcs7 = PKCS7Padding()
-        plain_text = pkcs7.encode(plain_text)
+        plain_text_bytes = pkcs7.encode(plain_text_bytes)
 
         # 数据加密
         crypter = AES.new(self.key, self.mode, self.key[:16])
         try:
-            cipher_text = crypter.encrypt(plain_text)
+            cipher_text = crypter.encrypt(plain_text_bytes)
             return ErrorCode.WXBizMsgCrypt_OK, base64.b64encode(cipher_text)
         except Exception as e:
             logger.error(e)
@@ -80,15 +82,15 @@ class MsgCrypto:
         # 消息长度
         msg_len = socket.ntohl(struct.unpack("I", plain_text[:4])[0])
         # 消息内容
-        msg_content = plain_text[4: msg_len + 4]
+        msg_content = plain_text[4: (msg_len + 4)]
         # receive id
-        from_received = plain_text[msg_len + 4:]
+        from_received = plain_text[(msg_len + 4):]
 
         # 判断 receive id
-        if from_received.decode('utf-8') != receive_id:
+        if from_received.decode("utf-8") != receive_id:
             return ErrorCode.WXBizMsgCrypt_ValidateCorpid_Error, None
 
-        return ErrorCode.WXBizMsgCrypt_OK, msg_content
+        return ErrorCode.WXBizMsgCrypt_OK, msg_content.decode("utf-8")
 
     @staticmethod
     def get_random_str() -> str:
