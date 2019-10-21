@@ -37,12 +37,14 @@ class MsgCrypto:
         """
         plain_text = plain_text.encode()
         # 拼接明文
-        plain_text = b''.join([
-            self.get_random_str().encode(),  # 16字节 随机字符串
-            struct.pack("I", socket.htonl(len(plain_text))),  # 4字节 消息长度
-            plain_text,  # 消息内容
-            receive_id.encode()  # receive id
-        ])
+        plain_text = b"".join(
+            [
+                self.get_random_str().encode(),  # 16字节 随机字符串
+                struct.pack("I", socket.htonl(len(plain_text))),  # 4字节 消息长度
+                plain_text,  # 消息内容
+                receive_id.encode(),  # receive id
+            ]
+        )
 
         # 消息补位
         pkcs7 = PKCS7Padding()
@@ -80,12 +82,12 @@ class MsgCrypto:
         # 消息长度
         msg_len = socket.ntohl(struct.unpack("I", plain_text[:4])[0])
         # 消息内容
-        msg_content = plain_text[4: msg_len + 4]
+        msg_content = plain_text[4 : msg_len + 4]
         # receive id
-        from_received = plain_text[msg_len + 4:]
+        from_received = plain_text[msg_len + 4 :]
 
         # 判断 receive id
-        if from_received.decode('utf-8') != receive_id:
+        if from_received.decode("utf-8") != receive_id:
             return ErrorCode.WXBizMsgCrypt_ValidateCorpid_Error, None
 
         return ErrorCode.WXBizMsgCrypt_OK, msg_content

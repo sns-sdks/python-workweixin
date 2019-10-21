@@ -1,9 +1,7 @@
 # 普通消息体的不同格式
 # Refer: https://work.weixin.qq.com/api/doc#90000/90135/90239
 
-XML_RESPOND_KEY = [
-    'Encrypt', 'MsgSignature', 'TimeStamp', 'Nonce'
-]
+XML_RESPOND_KEY = ["Encrypt", "MsgSignature", "TimeStamp", "Nonce"]
 XML_RESPOND_STRUCT = (
     "<xml>"
     "<Encrypt><![CDATA[{Encrypt}]]></Encrypt>"
@@ -14,12 +12,15 @@ XML_RESPOND_STRUCT = (
 )
 
 XML_BASE_KEY = [
-    'ToUserName', 'FromUserName', 'CreateTime', 'MsgType', 'MsgId', 'AgentID'
+    "ToUserName",
+    "FromUserName",
+    "CreateTime",
+    "MsgType",
+    "MsgId",
+    "AgentID",
 ]
 
-XML_TEXT_KEY = XML_BASE_KEY + [
-    'Content'
-]
+XML_TEXT_KEY = XML_BASE_KEY + ["Content"]
 XML_TEXT_STRUCT = (
     "<xml>"
     "<ToUserName><![CDATA[{ToUserName}]]></ToUserName>"
@@ -32,9 +33,7 @@ XML_TEXT_STRUCT = (
     "</xml>"
 )
 
-XML_MEDIA_KEY = XML_BASE_KEY + [
-    'PicUrl', 'MediaId'
-]
+XML_MEDIA_KEY = XML_BASE_KEY + ["PicUrl", "MediaId"]
 XML_MEDIA_STRUCT = (
     "<xml>"
     "<ToUserName><![CDATA[{ToUserName}]]></ToUserName>"
@@ -48,9 +47,7 @@ XML_MEDIA_STRUCT = (
     "</xml>"
 )
 
-XML_LINK_KEY = XML_BASE_KEY + [
-    'Title', 'Description', 'PicUrl'
-]
+XML_LINK_KEY = XML_BASE_KEY + ["Title", "Description", "PicUrl"]
 XML_LINK_STRUCT = (
     "<xml>"
     "<ToUserName><![CDATA[{ToUserName}]]></ToUserName>"
@@ -65,9 +62,7 @@ XML_LINK_STRUCT = (
     "</xml>"
 )
 
-XML_VOICE_KEY = XML_BASE_KEY + [
-    'MediaId', 'Format'
-]
+XML_VOICE_KEY = XML_BASE_KEY + ["MediaId", "Format"]
 XML_VOICE_STRUCT = (
     "<xml>"
     "<ToUserName><![CDATA[{ToUserName}]]></ToUserName>"
@@ -81,9 +76,7 @@ XML_VOICE_STRUCT = (
     "</xml>"
 )
 
-XML_VIDEO_KEY = XML_BASE_KEY + [
-    'MediaId', 'ThumbMediaId'
-]
+XML_VIDEO_KEY = XML_BASE_KEY + ["MediaId", "ThumbMediaId"]
 XML_VIDEO_STRUCT = (
     "<xml>"
     "<ToUserName><![CDATA[{ToUserName}]]></ToUserName>"
@@ -97,9 +90,7 @@ XML_VIDEO_STRUCT = (
     "</xml>"
 )
 
-XML_LOCATION_KEY = XML_BASE_KEY + [
-    'Location_X', 'Location_Y', 'Scale', 'Label'
-]
+XML_LOCATION_KEY = XML_BASE_KEY + ["Location_X", "Location_Y", "Scale", "Label"]
 XML_LOCATION_STRUCT = (
     "<xml>"
     "<ToUserName><![CDATA[{ToUserName}]]></ToUserName>"

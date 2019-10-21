@@ -17,8 +17,10 @@ def incompatible_validator(**kwargs):
     for name, param in kwargs.items():
         if param is not None:
             given += 1
-    params = ','.join(kwargs.keys())
+    params = ",".join(kwargs.keys())
     if given == 0:
-        raise WeWorkError(ErrorCode.MISSION_PARAM, f'Specify at least one of {params}')
+        raise WeWorkError(ErrorCode.MISSION_PARAM, f"Specify at least one of {params}")
     elif given > 1:
-        raise WeWorkError(ErrorCode.INVALID_PARAM, f'Incompatible parameters specified for {params}')
+        raise WeWorkError(
+            ErrorCode.INVALID_PARAM, f"Incompatible parameters specified for {params}"
+        )
